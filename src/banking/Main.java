@@ -85,7 +85,7 @@ public class Main {
                     exitMainMenu = true;
                 default:
                     System.out.println("Wrong input");
-                    break;
+
             }
         } while (!menuChoice.equals("0"));
     }
@@ -124,7 +124,7 @@ public class Main {
                     break;
                 default: {
                     System.out.println("Wrong input");
-                    break;
+                 
                 }
             }
         } while (!exitMainMenu);
