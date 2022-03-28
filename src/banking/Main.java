@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     static CardsDaoSqlite dao;
-    public static Map<String, Card> cards = new HashMap<>();
+    public static Map<String, Card> cardsCache = new HashMap<>();
 
     static private boolean exitMainMenu = false;
 
@@ -18,7 +18,7 @@ public class Main {
         System.out.println("Enter your PIN:");
         String pinCheck = scanner.nextLine();
 
-        Card tryCard = cards.get(cardNumberCheck);
+        Card tryCard = cardsCache.get(cardNumberCheck);
         if (tryCard != null) {
             if (tryCard.getPin().equals(pinCheck)) {
                 System.out.println("You have successfully logged in!");
@@ -27,7 +27,6 @@ public class Main {
         }
         System.out.println("Wrong card number or PIN!");
         return null;
-
     }
 
     static void accountMenu(Card workCard) {
@@ -47,7 +46,7 @@ public class Main {
                     System.out.println("Enter income:");
                     income = Integer.parseInt(scanner.nextLine());
                     workCard.setBalance(workCard.getBalance() + income);
-                    dao.updateCards(new Card[]{workCard});
+                    dao.updateCardsBalance(new Card[]{workCard});
                     //
                     break;
                 case "3":
@@ -56,7 +55,7 @@ public class Main {
                     if (!Card.isValidCreditCardNumber(cardNum)) {
                         System.out.println("Probably you made a mistake in the card number.\nPlease try again!");
                     } else {
-                        Card destCard = cards.get(cardNum);
+                        Card destCard = cardsCache.get(cardNum);
                         if (destCard == null) {
                             System.out.println("Such a card does not exist.");
                         } else {
@@ -67,14 +66,14 @@ public class Main {
                             } else {
                                 workCard.setBalance(workCard.getBalance() - transferAmount);
                                 destCard.setBalance(destCard.getBalance() + transferAmount);
-                                dao.updateCards(new Card[]{workCard, destCard});
+                                dao.updateCardsBalance(new Card[]{workCard, destCard});
                                 System.out.println("Success!");
                             }
                         }
                     }
                     break;
                 case "4":
-                    cards.remove(workCard);
+                    cardsCache.remove(workCard);
                     dao.deleteCard(workCard);
                     System.out.println("Account closed!");
                     menuChoice = "0";
@@ -108,7 +107,7 @@ public class Main {
                 case "1":
                     Card newCard = new Card(false);
 
-                    cards.put(newCard.getCardNumber(), newCard);
+                    cardsCache.put(newCard.getCardNumber(), newCard);
                     dao.saveCard(newCard);
 
                     System.out.println("Your card has been created");
@@ -144,7 +143,7 @@ public class Main {
         }
 
         dao = new CardsDaoSqlite(dbFileName);
-        cards = dao.loadAllCards();
+        cardsCache = dao.loadAllCards();
 
         mainMenu();
     }

@@ -81,7 +81,7 @@ public class CardsDaoSqlite {
         }
     }
 
-    public void updateCards(Card[] card) {
+    public void updateCardsBalance(Card[] card) {
         try {
             Statement statement = conn.createStatement();
             for (Card value : card) {
