@@ -82,7 +82,6 @@ public class Card {
             setCardNumber(newValidCardNumber());
             setPin(newPin());
         }
-
     }
 
     public String getCardNumber() {
