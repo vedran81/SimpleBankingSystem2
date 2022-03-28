@@ -53,28 +53,31 @@ public class Main {
                 case "3":
                     System.out.println("Transfer\nEnter card number:");
                     String cardNum = (scanner.nextLine());
-                    if (Card.isValidCreditCardNumber(cardNum)) {
+                    if (!Card.isValidCreditCardNumber(cardNum)) {
+                        System.out.println("Probably you made a mistake in the card number.\nPlease try again!");
+                    } else {
                         Card destCard = cards.get(cardNum);
-                        if (destCard != null) {
+                        if (destCard == null) {
+                            System.out.println("Such a card does not exist.");
+                        } else {
                             System.out.println("Enter how much money you want to transfer:");
                             int transferAmount = Integer.parseInt(scanner.nextLine());
-                            if (transferAmount <= workCard.getBalance()) {
+                            if (transferAmount > workCard.getBalance()) {
+                                System.out.println("Not enough money!");
+                            } else {
                                 workCard.setBalance(workCard.getBalance() - transferAmount);
                                 destCard.setBalance(destCard.getBalance() + transferAmount);
                                 dao.updateCards(new Card[]{workCard, destCard});
                                 System.out.println("Success!");
-                            } else System.out.println("Not enough money!");
-                        } else System.out.println("Such a card does not exist.");
-                    } else System.out.println("Probably you made a mistake in the card number.\nPlease try again!");
-
-                    //
+                            }
+                        }
+                    }
                     break;
                 case "4":
                     cards.remove(workCard);
                     dao.deleteCard(workCard);
                     System.out.println("Account closed!");
                     menuChoice = "0";
-                    //
                     break;
                 case "5":
                     System.out.println("You have successfully logged out!");
@@ -83,9 +86,9 @@ public class Main {
                 case "0":
                     System.out.println("Bye!");
                     exitMainMenu = true;
+                    break;
                 default:
                     System.out.println("Wrong input");
-                    break;
             }
         } while (!menuChoice.equals("0"));
     }
@@ -107,7 +110,7 @@ public class Main {
                     Card newCard = new Card(false);
 
                     cards.put(newCard.getCardNumber(), newCard);
-                    dao.SaveCard(newCard);
+                    dao.saveCard(newCard);
 
 
                     System.out.println("Your card has been created");
@@ -124,7 +127,6 @@ public class Main {
                     break;
                 default: {
                     System.out.println("Wrong input");
-                    break;
                 }
             }
         } while (!exitMainMenu);
@@ -143,12 +145,9 @@ public class Main {
             }
         }
 
-
         dao = new CardsDaoSqlite(dbFileName);
-        dao.loadAllCards();
+        cards = dao.loadAllCards();
 
         mainMenu();
     }
 }
-
-

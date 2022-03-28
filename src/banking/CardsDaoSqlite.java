@@ -1,6 +1,8 @@
 package banking;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CardsDaoSqlite {
 
@@ -8,13 +10,12 @@ public class CardsDaoSqlite {
 
     public CardsDaoSqlite(String fileName) {
 
-        String createTableSql = "CREATE TABLE IF NOT EXISTS card (\n"
-                + "id INTEGER PRIMARY KEY,\n"
-                + "number TEXT,\n"
-                + "pin TEXT,\n"
-                + "balance INTEGER DEFAULT 0\n"
+        String createTableSql = "CREATE TABLE IF NOT EXISTS card ("
+                + "id INTEGER PRIMARY KEY, "
+                + "number TEXT, "
+                + "pin TEXT, "
+                + "balance INTEGER DEFAULT 0 "
                 + ");";
-
 
         try {
             conn = DriverManager.getConnection("jdbc:sqlite:" + fileName);
@@ -24,11 +25,10 @@ public class CardsDaoSqlite {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-    public void SaveCard(Card card) {
-        String addCardSql = "INSERT INTO card (number, pin, balance) \n"
+    public void saveCard(Card card) {
+        String addCardSql = "INSERT INTO card (number, pin, balance) "
                 + "VALUES (? ,? ,?)";
 
         try {
@@ -47,9 +47,9 @@ public class CardsDaoSqlite {
         }
     }
 
-    public void loadAllCards() {
+    public Map<String, Card> loadAllCards() {
         String sql = "SELECT * FROM card";
-
+        Map<String, Card> returnMap = new HashMap<>();
         try {
             Statement statement = conn.createStatement();
 
@@ -61,11 +61,12 @@ public class CardsDaoSqlite {
                 card.setCardNumber(result.getString("number"));
                 card.setPin(result.getString("pin"));
                 card.setBalance(result.getInt("balance"));
-                Main.cards.put(card.getCardNumber(), card);
+                returnMap.put(card.getCardNumber(), card);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return returnMap;
     }
 
     public void deleteCard(Card card) {
@@ -96,6 +97,5 @@ public class CardsDaoSqlite {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
     }
 }

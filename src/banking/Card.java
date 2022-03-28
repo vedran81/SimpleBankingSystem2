@@ -40,8 +40,6 @@ public class Card {
 
         int sum = sumDigits(cardIntArray);  // step 3
 
-        //System.out.println(sum);
-
         // step 4
         return sum % 10 == 0;
     }
