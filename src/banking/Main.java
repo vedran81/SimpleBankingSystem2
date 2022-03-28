@@ -106,12 +106,10 @@ public class Main {
                     exitMainMenu = true;
                     break;
                 case "1":
-
                     Card newCard = new Card(false);
 
                     cards.put(newCard.getCardNumber(), newCard);
                     dao.saveCard(newCard);
-
 
                     System.out.println("Your card has been created");
                     System.out.println("Your card number:");

@@ -79,7 +79,6 @@ public class CardsDaoSqlite {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
     }
 
     public void updateCards(Card[] card) {
